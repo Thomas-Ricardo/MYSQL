@@ -1,0 +1,150 @@
+Banco de dados: conjunto de tabelas
+Tabelas: guardam dados de coisas que tem caracteríscas sêmelhantes
+Registro: ficam dentro das tabelas e são compostos por Campos
+
+Tipos primitivos MYSQL:
+NÚMERICOS: INTEIROS-> TinyInt, SmallInt, Int, MediumInt, BigInt
+REAL-> Decimal, Float, Double, Real
+LÓGICO->Bit, Boolean
+DATA/TEMPO ->Date, DateTime, TimeStamp, Time, Year
+LITERAL:CARACTERE->Char, VarChar
+TEXTO->TinyText, Text, MediumText, LongText
+BINÁRIO->TinyBlod, Blod, MediumBlod, LongBlod
+COLEÇÃO->Enum, Set
+ESPACIAL: -> Geometry, Point, Polygon, MultiPolygon
+
+Usando o comando: drop database ''; = você exclui o banco de dados citado 
+
+UTF8 = é o padrão de caracteres latinos que usamos no BRASIL
+para configurar o collation e o characterset usamos:
+
+create database cadastro 
+default character set utf8
+default collate utf8_general_ci;
+
+Se for inserir dados e for a mesma ordem  de campo que estiver no banco, não precisa dizer quais são os campos.
+
+Para modificar usamos o código modify column ''
+Para mudar o nome da coluna: change column''(só que aqui tem que colocar tudo oque você quer e mesmo o que não for renomear.
+EX:
+Deletar coluna:
+alter table pessoas
+drop column profissao;
+
+Alterar o nome:
+alter table pessoas 
+rename to mafagafos;
+
+Adicionar uma coluna:
+alter table pessoas
+add column profissao varchar(10) after nome;
+
+Alterar a coluna:
+alter table pessoas
+modify column profissao varchar(20) not null default '';
+
+Alterar a coluna com o nome junto:
+alter table pessoas 
+change column profissao prof varchar(20);
+
+Adicionar chave primaria:
+alter table cursos
+add primary key(idcurso);
+
+usando o comando limit ao final de um update, definimos quantas linhas vão ser alteradas
+  
+Para saber como foi criado o banco de dados e a tabela, usamos os comandos:
+show create database 'coloca o nome do banco';
+show create table 'coloca o nome da tabela';
+
+como selecionar colunas específicas da tabela, colocando em ordem por ano:
+
+select nome, descricao, carga, ano from cursoscev
+order by ano;
+
+como selecionar as colunas especificando as linhas e colocando em ordem:
+
+select nome, descricao, ano from cursoscev
+where ano >= 2015
+order by ano, nome;
+
+como selecionar as colunas e linhas entre algumas especificações e colocando ano em decrescente e nome em:
+select nome, ano from crusoscev
+where ano between 2014 and 2016
+order by ano desc, nome asc;
+
+selecionar somente as colunas e linhas entre as especificações do usando o IN:
+
+select nome, descricao, ano from cursoscev
+where ano in (2014, 2016)
+order by ano;
+
+selecionar usando and e or:
+
+select nome, carga, totaulas from cursoscev
+where carga > 35 and totaulas < 30;
+
+select nome, carga, totaulas from cursoscev
+where carga > 35 or totaulas < 30;
+
+selecionar o que você quiser na tabela especificando apenas uma letra usando o 'like' e = parecido o '%' = coringa, 
+ou seja pode ser qualquer coisa se colocar % antes vai ser qualquer coisa que tenha o p e se for '%p% vai buscar todos que tiverem a letra p:
+
+select * from cursoscev
+where nome like 'p%'
+order by ano;
+
+seleciona o '__' entende-se que tem que ter um caractere:
+
+select * from cursoscev
+where nome like 'p__t%';
+
+fazer uma distinção do que você quer, sem repetir:
+
+select distinct carga from cursoscev
+order by carga;
+
+FUNÇÕES DE AGRAGAÇÃO:
+
+função que conta quantos registros tem:
+
+select count(*) from cursoscev where carga > 40;
+
+função para dizer qual o maior do registro que você quer:
+
+select max(totaulas) from cursoscev where ano = '2016';
+
+função para dizer qual o menor do registro que você quer colocando o nome dele:
+
+select nome, min(totaulas) from cursoscev;
+
+função que mostra a média de todos os registros que você selecionou:
+
+select avg(totaulas) from cursoscev where ano = '2016';
+
+DISTINGUINDO:
+select distinct carga from cursoscev
+order by carga; 
+
+
+AGRUPANDO:
+
+select carga, count(nome) from cursoscev where totaulas =30 
+group by carga;
+
+Podemos usar o having quando agruparmos, o having podemos usar ele para filtrar:
+
+select ano, count(*) from cursoscev
+group by ano 
+having ano >2013
+order by count(*) desc;
+
+Usamos o INNODB para que as chaves estrangeiras sejam suportadas garantindo a integridade referêncial 
+e  para que todas as ações que um banco de dados faz sigam a regra da ACID:
+
+A-tomicidade = ou tudo acontece ou nada é considerado.
+C-onsistência = quando for alterado o banco ele tem que estar funcionando se não volta para o estado antigo.
+I-solamento = mesmo tendo coisas paralelas acontecendo, uma não podem afetar a outra.
+D-urabilidade = toda transação tem que ser durável, enquanto for necessário.
+
+error changing account
